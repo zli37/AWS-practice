@@ -1,0 +1,37 @@
+// This file has the records of the procedures 
+
+// Create a bucket called 'AWS-practice-PeterLi' (unique) in US West (Oregon) using s3 on AWS
+// Launch an instance on AWS using Community AMIs 'cs5630s17-HadoopSpark' (This is a community AMI)
+// Reference: https://weblog.cs.uiowa.edu/cs5630s17
+// At AWS dashboard 'My security credentials', generated an access key in file 'rootkey.cvs'
+// Note that the 'rootkey,cvs' file is very important
+// Make sure it is safe
+
+// Login to AMI 
+ssh -i pair_keys.pem ec2-user@'IP address'
+// Note that the user name's always been 'ec2-user'
+
+// Configure the s3 
+s3cmd --configure   // Put in Keys from 'rootkey.cvs'
+    Encryption password: XXXXXXX
+    // Leave 'Path to GPG program' and 'Use HTTPS protocol' blank
+    
+    s3cmd ls; s3cmd [-r] get; s3cmd [-r] put; s3cmd [-r] rm
+    e.g. s3cmd get s3://AWS-practice-PeterLi/reviews_Books_5.json.gz .
+    
+// Create a large volume under EC2 instance
+// Before mounting the new volume, need to make sure that format of the new volume
+
+sudo file -s /dev/'local_disk'
+sudo file -s /dev/'whatever_the_disk_is'
+sudo mkfs -t ext4 'device_name'     // format depends on the local_disk
+// Might want to use chown to change the permission
+
+// User the converter code to convert the json.gz to strict json file
+// Reference:
+// http://jmcauley.ucsd.edu/data/amazon/
+
+// Generate DataFrame in pyspark
+    from pyspark.sql.types import *
+    x = spark.read.json("the_json_file_name")
+    x.count()
